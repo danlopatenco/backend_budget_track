@@ -1,0 +1,94 @@
+{
+    "categories": [
+      {
+        "name": "Mâncare și băuturi",
+        "emoji_text": "🍔🍕🥤",
+        "subcategories": [
+          "Alimente",
+          "Restaurante/cafenele/fast-food",
+          "Băuturi alcoolice",
+          "Băuturi răcoritoare"
+        ]
+      },
+      {
+        "name": "Transport",
+        "emoji_text": "🚗",
+        "subcategories": [
+          "Combustibil",
+          "Transport în comun",
+          "Taxi/ridesharing"
+        ]
+      },
+      {
+        "name": "Călătorii",
+        "emoji_text": "✈️",
+        "subcategories": [
+          "Bilete de avion/tren",
+          "Cazare",
+          "Cheltuieli cu mâncarea și băuturile"
+        ]
+      },
+      {
+        "name": "Îmbrăcăminte și accesorii",
+        "emoji_text": "👕",
+        "subcategories": [
+          "Îmbrăcăminte",
+          "Încălțăminte",
+          "Bijuterii"
+        ]
+      },
+      {
+        "name": "Sănătate și frumusețe",
+        "emoji_text": "🌿",
+        "subcategories": [
+          "Medicamente",
+          "Produse de igienă personală",
+          "Servicii de sănătate/frumusețe"
+        ]
+      },
+      {
+        "name": "Distracții",
+        "emoji_text": "🎉",
+        "subcategories": [
+          "Bilete la evenimente",
+          "Cinema/TV",
+          "Jocuri de noroc"
+        ]
+      },
+      {
+        "name": "Facturi",
+        "emoji_text": "💸",
+        "subcategories": [
+          "Chirie",
+          "Utilități (curent, apă, gaz)",
+          "Internet/Telefonie mobilă"
+        ]
+      },
+      {
+        "name": "Educație",
+        "emoji_text": "📚",
+        "subcategories": [
+          "Cursuri",
+          "Materiale didactice",
+          "Cursuri de dezvoltare profesională"
+        ]
+      },
+      {
+        "name": "Cadouri și caritate",
+        "emoji_text": "🎁",
+        "subcategories": [
+          "Cadouri pentru prieteni și familie",
+          "Donatii pentru organizații de caritate"
+        ]
+      },
+      {
+        "name": "Diverse",
+        "emoji_text": "🌟",
+        "subcategories": [
+          "Comisioane bancare",
+          "Asigurări",
+          "Alte cheltuieli nedefinite"
+        ]
+      }
+    ]
+  }
