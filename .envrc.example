@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+export SECRET_KEY=''
+export DEBUG=true
+
+export POSTGRES_HOST=''
+export POSTGRES_DB=''
+export POSTGRES_USER=''
+export POSTGRES_PASSWORD=''
