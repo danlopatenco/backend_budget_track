@@ -7,6 +7,7 @@ class CategorySerializer(serializers.ModelSerializer):
     """
     Serializer for the `Category` model.
     """
+    user_id = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Category

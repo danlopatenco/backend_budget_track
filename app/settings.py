@@ -27,6 +27,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_swagger',
+    'drf_yasg',
     'core',
     'expenses'
 ]
@@ -39,6 +41,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'core.middlewares.TelegramAuthMiddleware',
 ]
 
 ROOT_URLCONF = 'app.urls'
@@ -68,7 +71,8 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
 }
 
 
@@ -78,6 +82,9 @@ SIMPLE_JWT = {
 
 WSGI_APPLICATION = 'app.wsgi.application'
 
+
+REDIS_HOST = get_env_var('REDIS_HOST')
+REDIS_PORT = get_int_env_var('REDIS_PORT', 6379)
 
 POSTGRES_HOST = get_env_var("POSTGRES_HOST")
 POSTGRES_PORT = get_int_env_var("POSTGRES_PORT", 5432)

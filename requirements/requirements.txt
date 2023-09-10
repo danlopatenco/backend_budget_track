@@ -1,6 +1,10 @@
 Django
 psycopg2-binary
 djangorestframework
+django-rest-swagger
 markdown
 django-filter
 djangorestframework-simplejwt
+Pillow
+redis[hiredis]
+drf-yasg

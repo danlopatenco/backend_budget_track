@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User
+from .models import User, UserProfile
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
 
@@ -66,3 +66,8 @@ class UserAdmin(BaseUserAdmin):
 
 
 admin.site.register(User, UserAdmin)
+
+
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ("pk", 'user', 'telegram_user_id',)

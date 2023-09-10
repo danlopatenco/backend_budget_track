@@ -7,3 +7,6 @@ export POSTGRES_HOST=''
 export POSTGRES_DB=''
 export POSTGRES_USER=''
 export POSTGRES_PASSWORD=''
+
+REDIS_HOST=''
+REDIS_PORT=''

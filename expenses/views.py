@@ -1,6 +1,6 @@
 
 from django.db.models import Q
-
+from datetime import datetime, timedelta
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .models import Category, Subcategory
-from .serializers import CategorySerializer, SubCategorySerializer
+from .serializers import CategorySerializer, SubCategorySerializer, ExpenseSerializer
 
 
 class CategoryAPIView(APIView):
@@ -20,7 +20,6 @@ class CategoryAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk=None):
-
         """
         Retrieve a single category or list all categories.
         """
@@ -40,7 +39,13 @@ class CategoryAPIView(APIView):
         """
         Create a new category.
         """
-        serializer = self.serializer_class(data=request.data)
+
+        user_obj = request.user
+        if not user_obj:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -51,8 +56,16 @@ class CategoryAPIView(APIView):
         """
         Update an existing category.
         """
-        category = Category.objects.get(pk=pk)
-        serializer = self.serializer_class(category, data=request.data)
+        try:
+            category = Category.objects.get(pk=pk)
+
+        except Category.DoesNotExist:
+            return Response('Category not found', status=status.HTTP_404_NOT_FOUND)
+
+        if category.user_id.email != request.user.email:
+            return Response("Unauthorized: You do not have the necessary permissions to modify this data.", status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = self.serializer_class(category, data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -103,3 +116,50 @@ class SubCategoryAPIView(APIView):
 
         except Subcategory.DoesNotExist:
             return Response('Subcategory not found', status=status.HTTP_404_NOT_FOUND)
+
+
+class ExpenseAPIView(APIView):
+    """
+    API endpoint for viewing and managing expenses.
+    """
+
+    serializer_class = ExpenseSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        data = request.data.copy()
+        data['user'] = request.user.id
+
+        serializer = self.serializer_class(data=data)
+
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request):
+        period = request.query_params.get('period')
+
+        start_date = self.get_period(period)
+
+        print(start_date)
+
+        return Response('200 ok')
+
+    def get_period(self, period):
+        today = datetime.now()
+
+        if period == 'today':
+            return today.replace(hour=0, minute=0, second=0, microsecond=0)
+        elif period == 'this_week':
+            return today - timedelta(days=today.weekday())
+        elif period == 'this_month':
+            return today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        elif period == 'last_3_months':
+            return today - timedelta(days=90)
+        elif period == 'last_6_months':
+            return today - timedelta(days=180)
+        elif period == 'this_year':
+            return today.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+        else:
+            return None
