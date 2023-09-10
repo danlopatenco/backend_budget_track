@@ -15,7 +15,7 @@ SECRET_KEY = get_env_var("SECRET_KEY")
 DEBUG = get_bool_env_var("DEBUG", "no")
 
 ALLOWED_HOSTS = [
-    '192.168.100.3'
+    '*'
 ]
 
 
