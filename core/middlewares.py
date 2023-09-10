@@ -14,12 +14,10 @@ class TelegramAuthMiddleware:
         self.redis_client = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, decode_responses=True)
 
     def redis_save_user_data(self, email, token_data):
-        # Use the HSET command to store data in the Redis hash
         self.redis_client.set(str(email), json.dumps(token_data))
         return True
 
     def redis_get_user_data(self, email):
-        # Use the HGET command to retrieve data from the Redis hash
         user_data = self.redis_client.get(email)
         return json.loads(user_data) if user_data else None
 

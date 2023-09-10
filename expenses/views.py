@@ -1,13 +1,13 @@
 
-from django.db.models import Q
-from datetime import datetime, timedelta
+from django.db.models import Q, Sum
+from django.utils import timezone
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from .models import Category, Subcategory
+from .models import Category, Subcategory, Expense
 from .serializers import CategorySerializer, SubCategorySerializer, ExpenseSerializer
 
 
@@ -141,25 +141,45 @@ class ExpenseAPIView(APIView):
         period = request.query_params.get('period')
 
         start_date = self.get_period(period)
+        end_date = timezone.now()
 
-        print(start_date)
+        user_id = request.user.id
 
-        return Response('200 ok')
+        if period != 'all':
+            expenses = Expense.objects.filter(date__range=(start_date, end_date), user_id=user_id)
+        else:
+            expenses = Expense.objects.filter(user_id=user_id).all()
+
+        expenses_summary = expenses.values('subcategory__name').annotate(total_amount=Sum('amount'))
+        total_sum = expenses_summary.aggregate(total_sum=Sum('total_amount'))['total_sum']
+
+        if period != 'all':
+            start_date_str = timezone.localtime(start_date).strftime('%Y-%m-%d')
+            end_date_str = timezone.localtime(end_date).strftime('%Y-%m-%d')
+        else:
+            start_date_str = timezone.localtime(expenses.last().date).strftime('%Y-%m-%d')
+            end_date_str = timezone.localtime(expenses.first().date).strftime('%Y-%m-%d')
+        period_response = f"{start_date_str} - {end_date_str}"
+
+        return Response({"data": expenses_summary,
+                         'total_sum': total_sum,
+                         "period": period_response
+                         })
 
     def get_period(self, period):
-        today = datetime.now()
+        today = timezone.now()
 
         if period == 'today':
             return today.replace(hour=0, minute=0, second=0, microsecond=0)
         elif period == 'this_week':
-            return today - timedelta(days=today.weekday())
+            return today - timezone.timedelta(days=today.weekday())
         elif period == 'this_month':
             return today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         elif period == 'last_3_months':
-            return today - timedelta(days=90)
+            return today - timezone.timedelta(days=90)
         elif period == 'last_6_months':
-            return today - timedelta(days=180)
+            return today - timezone.timedelta(days=180)
         elif period == 'this_year':
             return today.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
         else:
-            return None
+            return 'all'
