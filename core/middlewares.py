@@ -58,8 +58,8 @@ class TelegramAuthMiddleware:
             if user_profile:
                 data = self.redis_get_user_data(user_profile.email)
 
-                token = data.get('token')
-                if token:
+                if data:
+                    token = data.get('token')
                     request.META['HTTP_AUTHORIZATION'] = f'Bearer {token}'
 
                 is_valid = self.is_token_valid(request)
